@@ -10,6 +10,14 @@ function _login(username,password){
     }
 	return api.post('/login', params);
 }
+function _getUser(username){
+    let params= {
+		token:token,
+    	username: username
+    }
+	return api.post('/getUser', params);
+}
+
 function _select(table,where,order){
 	if(table){
 		table = table.toUpperCase();
@@ -105,6 +113,7 @@ function _delByIds(table,ids){
 const database = {};
 
 database.login = _login;
+database.getUser = _getUser;
 database.select = _select;
 database.insert = _insert;
 database.update = _update;

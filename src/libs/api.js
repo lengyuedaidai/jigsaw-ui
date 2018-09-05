@@ -1,15 +1,17 @@
 //引入axios
 import axios from 'axios';
-import qs from 'qs'
+import qs from 'qs';
+import {router} from '../router/index';
+import store from '../store';
 let cancel ,promiseArr = {}
 let instance = axios.create({
 	  baseURL: 'http://localhost:8089/jigsaw/rest/dataServices',
-	  timeout: 1000,
+	  timeout: 30000,
 	  headers: {'X-Requested-With': 'XMLHttpRequest'}
 	});
 const CancelToken = axios.CancelToken;
 //请求拦截器
-instance.interceptors.request.use(config => {
+/*instance.interceptors.request.use(config => {
     //发起请求时，取消掉当前正在进行的相同请求
     if (promiseArr[config.url]) {
         promiseArr[config.url]('操作取消')
@@ -20,18 +22,29 @@ instance.interceptors.request.use(config => {
       return config
 }, error => {
     return Promise.reject(error)
-})
+})*/
 
 //响应拦截器即异常处理
 instance.interceptors.response.use(response => {
 	if(response.data&&response.data.statusCode===0){
 		return response.data.data;
 	}else{
-		debugger;
+		switch(response.data.statusCode){
+			case 202:
+				this;
+				router;
+				store;
+				// 退出登录
+				store.commit('logout', this);
+				store.commit('clearOpenedSubmenu');
+				router.replace({
+					name: 'login'
+				});
+				break;
+		}
 		return Promise.reject(response)
 	}
 }, err => {
-	debugger;
     if (err && err.response) {
       switch (err.response.status) {
         case 400:
